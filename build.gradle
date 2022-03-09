@@ -19,7 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web',
+                    'javax.servlet:jstl'
     compileOnly 'org.projectlombok:lombok',
                  'org.apache.tomcat.embed:tomcat-embed-jasper'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

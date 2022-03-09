@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping("/produtos")
@@ -18,16 +20,27 @@ public class ProdutoControlador {
         return "produto-form";
     }
 
-    @PostMapping("cadastrar-produto")
-    public String cadastrarProduto(ProdutoDTO produtoDTO) {
+    @PostMapping("/cadastrar-produto")
+    public RedirectView cadastrarProduto(ProdutoDTO produtoDTO, RedirectAttributes redirectAttributes) {
         ProdutoRepositorio repositorio = new ProdutoRepositorio();
-        ProdutoEntidade entidade = new ProdutoEntidade();
-        entidade.setNome(produtoDTO.getNome());
-        entidade.setDescricao(produtoDTO.getDescricao());
-        entidade.setValor(produtoDTO.getValor());
 
-        repositorio.salvar(entidade);
+        ProdutoEntidade entidade = new ProdutoEntidade(produtoDTO);
 
+        ProdutoEntidade entidadeSalva = repositorio.salvar(entidade);
+
+        //model.addAttribute("produtos", repositorio.obterTodos());
+
+        // Repassando Atributos para Listar
+        redirectAttributes.addFlashAttribute("produtos", repositorio.obterTodos());
+
+        RedirectView redirectView = new RedirectView("/produtos/listar", true);
+
+        return redirectView;
+    }
+
+    @GetMapping("/listar")
+    public String listar() {
         return "listar-produtos";
     }
+
 }
